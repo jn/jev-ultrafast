@@ -12,11 +12,11 @@ from .questions import NEXT_ACTION, TARGET, TEXT_VALUE
 CLIENT = httpx.Client(http2=True, timeout=25)
 
 
-def post_json(url, key, body):
+def post_json(url, key, body, *, timeout=25):
     headers = {"Authorization": f"Bearer {key}"} if key else {}
     for attempt in range(3):
         try:
-            response = CLIENT.post(url, json=body, headers=headers)
+            response = CLIENT.post(url, json=body, headers=headers, timeout=timeout)
         except httpx.HTTPError:
             raise RuntimeError("Model connection failed; no action executed.") from None
         if response.status_code in {429, 529, 503} and attempt < 2:
@@ -119,7 +119,7 @@ def choose(state, goal, history):
     started = time.perf_counter()
     url = os.environ.get("JEV_SYSTEM_ONE_URL")
     if url:
-        result = post_json(url, os.environ.get("JEV_API_KEY"), body)
+        result = post_json(url, os.environ.get("JEV_API_KEY"), body, timeout=90)
     else:
         result = post_json("https://api.typesafe.ai/v1/systemone", os.environ["TYPESAFE_API_KEY"], body)
     operation_answer = validate_choice(result["answers"].get("operation", {}), operations)

@@ -84,8 +84,9 @@ JEV_SYSTEM_ONE_URL=http://127.0.0.1:8818/v1/systemone
 TYPESAFE_MODEL=jevk5-0.2
 ```
 
-Set `JEV_API_KEY` if the server requires bearer authentication. The text helper
-keeps its own configuration for actions that type text.
+Set `JEV_API_KEY` if the server requires bearer authentication. Custom decision
+requests allow up to 90 seconds for local inference. The text helper keeps its
+own configuration for actions that type text.
 
 ## Use the original library
 

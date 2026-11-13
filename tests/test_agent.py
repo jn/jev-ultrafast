@@ -99,7 +99,8 @@ def test_all_heads_are_one_request_and_only_matching_head_executes(monkeypatch):
 def test_custom_system_one_endpoint_can_run_without_a_hosted_key(monkeypatch):
     url = "http://127.0.0.1:8818/v1/systemone"
 
-    def post(actual_url, key, body):
+    def post(actual_url, key, body, *, timeout):
+        assert timeout == 90
         assert actual_url == url
         assert key is None
         assert body["model"] == "jevk5-0.2"
