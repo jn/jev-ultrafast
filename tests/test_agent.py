@@ -96,6 +96,27 @@ def test_all_heads_are_one_request_and_only_matching_head_executes(monkeypatch):
     assert set(calls[0]["questions"]) == {"operation", "click_target", "type_text_target"}
 
 
+def test_custom_system_one_endpoint_can_run_without_a_hosted_key(monkeypatch):
+    url = "http://127.0.0.1:8818/v1/systemone"
+
+    def post(actual_url, key, body, *, timeout):
+        assert timeout == 90
+        assert actual_url == url
+        assert key is None
+        assert body["model"] == "jevk5-0.2"
+        return {
+            "model": body["model"],
+            "answers": {"operation": choice(body["questions"]["operation"]["criteria"], "DONE")},
+        }
+
+    monkeypatch.setenv("JEV_SYSTEM_ONE_URL", url)
+    monkeypatch.setenv("TYPESAFE_MODEL", "jevk5-0.2")
+    monkeypatch.setenv("TYPESAFE_API_KEY", "hosted-only")
+    monkeypatch.delenv("JEV_API_KEY", raising=False)
+    monkeypatch.setattr(model, "post_json", post)
+    assert model.choose(page(), "Verify the result", [])["choice"] == "DONE"
+
+
 def test_click_cannot_consume_a_text_target(monkeypatch):
     def post(_url, _key, body):
         return {

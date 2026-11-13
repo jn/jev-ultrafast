@@ -74,6 +74,20 @@ Chrome connects through [Browser Harness](https://github.com/browser-use/browser
 
 `TEXT_MODEL_API_KEY` is an OpenRouter key in the example configuration. The current demo uses `inception/mercury-2.5` with reasoning disabled. Gemini, GLM, and DeepSeek can also use the OpenAI-compatible text helper; configure the appropriate model, endpoint, and reasoning setting.
 
+### Use a System One decision server
+
+Set `JEV_SYSTEM_ONE_URL` to the full decision endpoint and `TYPESAFE_MODEL` to a model
+served there. For example, with a local OpenJev instance that serves `jevk5-0.2`:
+
+```dotenv
+JEV_SYSTEM_ONE_URL=http://127.0.0.1:8818/v1/systemone
+TYPESAFE_MODEL=jevk5-0.2
+```
+
+Set `JEV_API_KEY` if the server requires bearer authentication. Custom decision
+requests allow up to 90 seconds for local inference. The text helper keeps its
+own configuration for actions that type text.
+
 ## Use the original library
 
 ```python
